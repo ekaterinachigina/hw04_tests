@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}
+  <h1>{{ group.title }}</h1>
+{% endblock %}
+{% block content %}
+  <div class="container py-5">
+    <h1>{{ group.title }}<h1>
+    <p>{{ group.description | linebreaksbr }}</p>
+    {% for post in page_obj %}
+    {% include 'includes/single_post.html' %}
+    {% endfor %}
+  </div>
+{% endblock %}
