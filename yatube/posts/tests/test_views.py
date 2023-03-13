@@ -40,7 +40,7 @@ class PostsPagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         template_pages_names = {
             reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group_list', args=(self.group.slug.id,)):
+            reverse('posts:group_list', args=(self.group.id,)):
                 'posts/group_list.html',
             reverse('posts:profile',
                     args=[PostsPagesTests.user.username]):
@@ -78,7 +78,8 @@ class PostsPagesTests(TestCase):
 
     def test_profile_page_correct_context(self):
         response = self.guest_client.get(reverse('posts:profile',
-                                              kwargs={'username': self.post.author}))
+                                         kwargs={'username':
+                                                 self.post.author}))
         context_profile = response.context['page_obj'][0]
         self.assertEqual(context_profile.text, self.post.text)
 

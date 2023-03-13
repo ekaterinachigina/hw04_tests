@@ -31,7 +31,7 @@ class PostFormTests(TestCase):
         posts_count = Post.objects.count()
         form_data = {'text': 'Тестовый пост из формы', 'group': self.group.id}
         response = self.authorized_client.post(
-            reverse('new_post'),
+            reverse('posts:post_create'),
             data=form_data,
             follow=True
         )
@@ -40,14 +40,13 @@ class PostFormTests(TestCase):
             text='Тестовый пост из формы',
             group=self.group.id
         ).exists())
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('post_create'))
 
     def test_edit_post_in_form(self):
         form_data = {'text': 'Новый текст', 'group': self.group.id}
         self.authorized_client.post(
-            reverse('post_edit',
-                    kwargs={'username': self.author.username,
-                            'post_id': self.post.id}),
+            reverse('posts:post_edit',
+                    kwargs={'post_id': self.post.id}),
             data=form_data
         )
         response = self.authorized_client.get(

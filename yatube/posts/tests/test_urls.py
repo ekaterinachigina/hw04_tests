@@ -44,7 +44,8 @@ class StaticURLTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_group(self):
-        response = self.guest_client.get(f'/group/{StaticURLTests.group.slug}/')
+        response = self.guest_client.get(f'/group/'
+                                         f'{StaticURLTests.group.slug}/')
         self.assertEqual(response.status_code, 200)
 
     def test_profile(self):
