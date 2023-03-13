@@ -40,7 +40,8 @@ class PostFormTests(TestCase):
             text='Тестовый пост из формы',
             group=self.group.id
         ).exists())
-        self.assertRedirects(response, reverse('post_create'))
+        self.assertRedirects(response, reverse('posts:profile',
+                             kwargs={'username': self.post.author}))
 
     def test_edit_post_in_form(self):
         form_data = {'text': 'Новый текст', 'group': self.group.id}
@@ -51,8 +52,7 @@ class PostFormTests(TestCase):
         )
         response = self.authorized_client.get(
             reverse('post',
-                    kwargs={'username': self.author.username,
-                            'post_id': self.post.id})
+                    kwargs={'post_id': self.post.id})
         )
         self.assertEqual(response.context['post'].text, 'Новый текст')
         self.assertTrue(Post.objects.filter(
