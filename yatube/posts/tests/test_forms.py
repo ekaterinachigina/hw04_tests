@@ -51,7 +51,7 @@ class PostFormTests(TestCase):
             data=form_data
         )
         response = self.authorized_client.get(
-            reverse('post',
+            reverse('posts:post_detail',
                     kwargs={'post_id': self.post.id})
         )
         self.assertEqual(response.context['post'].text, 'Новый текст')

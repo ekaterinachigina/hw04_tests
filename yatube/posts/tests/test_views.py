@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 from django import forms
+
 from posts.models import Post, Group
 
 
@@ -40,7 +41,7 @@ class PostsPagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         template_pages_names = {
             reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group_list', args=(self.group.id,)):
+            reverse('posts:group_list', args=(self.group.slug,)):
                 'posts/group_list.html',
             reverse('posts:profile',
                     args=[PostsPagesTests.user.username]):
@@ -54,6 +55,7 @@ class PostsPagesTests(TestCase):
         for reverse_name, template in template_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
                 response = self.author_client.get(reverse_name)
+                assert response.status_code == 200, response.status_code
                 self.assertTemplateUsed(response, template)
 
     def test_index_page_correct_context(self):
