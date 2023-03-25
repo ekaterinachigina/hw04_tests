@@ -7,7 +7,7 @@ from posts.models import Post, Group, get_user_model
 
 User = get_user_model()
 
-MAIN_PAGE = reverse('posts:main')
+MAIN_PAGE = reverse('posts:index')
 
 POST_CREATE = reverse('posts:post_create')
 
@@ -29,11 +29,11 @@ class PostsPagesTests(TestCase):
             group=cls.group,
         )
         cls.post_detail = reverse('posts:post_detail',
-                                  args={'post_id': cls.post.id})
+                                  kwargs={'post_id': cls.post.id})
         cls.group_list = reverse('posts:group_list',
-                                 args={'slug': cls.group.slug})
+                                 kwargs={'slug': cls.group.slug})
         cls.post_edit = reverse('posts:post_edit',
-                                args={'post_id': cls.post.id})
+                                kwargs={'post_id': cls.post.id})
         cls.profile = reverse('posts:profile',
                               args=[PostsPagesTests.user.username])
 
@@ -88,13 +88,13 @@ class PaginatorViewsTest(TestCase):
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
         cls.author = User.objects.create_user(username='auth')
-        cls.group = Group.objects.create()
+        cls.group = Group.objects.create(slug='group')
         new_posts = [Post(author=cls.author, text='Тестовый пост',
                           group=cls.group,)for i in range(15)]
         cls.post = Post.objects.bulk_create(new_posts)
 
     def test_first_page_contains_ten_records(self):
-        response = self.authorized_client.get(reverse('posts:м'))
+        response = self.authorized_client.get(reverse('posts:index'))
         self.assertEqual(len(response.context.get('page_obj').object_list), 10)
 
     def test_second_page_contains_three_records(self):

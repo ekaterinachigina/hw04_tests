@@ -26,7 +26,7 @@ class PostFormTests(TestCase):
         )
         cls.new_group = Group.objects.create(
             title='Тестовая группа',
-            slug='test-slug',
+            slug='test-slug_1',
             description='Описание'
         )
         cls.post_edit = reverse('posts:post_edit',
@@ -53,8 +53,8 @@ class PostFormTests(TestCase):
         self.assertEqual(self.form_data['text'], post.text,
                          'Текст не совпадает!')
         self.assertEqual(self.form_data['group'], post.group.id)
-        self.assertRedirects(response, reverse('post:profile',
-                             args={'username': self.post.author}))
+        self.assertRedirects(response, reverse('posts:profile',
+                             kwargs={'username': post.author}))
 
     def test_edit_post_in_form(self):
         response = self.authorized_client.post(self.post_edit,
