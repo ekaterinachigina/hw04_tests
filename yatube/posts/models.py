@@ -15,14 +15,19 @@ class Group(models.Model):
 
 
 class Post(models.Model):
-    text = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
+    text = models.TextField('Текст поста',
+                            help_text='Введите текст поста')
+    pub_date = models.DateTimeField('Дата публикации',
+                                    auto_now_add=True)
     author = models.ForeignKey(User,
-                               on_delete=models.CASCADE)
+                               on_delete=models.CASCADE,
+                               verbose_name='Автор')
     group = models.ForeignKey(Group,
                               blank=True,
                               null=True,
-                              on_delete=models.SET_NULL)
+                              on_delete=models.SET_NULL,
+                              verbose_name='Группа',
+                              help_text='Выберите группу')
 
     def __str__(self) -> str:
         return self.text[0:15]
