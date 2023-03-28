@@ -31,25 +31,27 @@ class PostFormTests(TestCase):
         )
         cls.post_edit = reverse('posts:post_edit',
                                 args=[PostFormTests.post.id])
+        cls.second_group = Group.objects.create(
+            title='Тестовая группа',
+            slug='test-slug_2',
+            description='Описание'
+        )
 
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.author)
-        self.form_data = {'text': 'Новый текст',
-                          'group': self.new_group.id}
 
     def test_post_form_create_new_post(self):
+        self.form_data = {'text': 'Другой текст',
+                          'group': self.new_group.id, }
         posts_count = Post.objects.count()
-        ids = list(Post.objects.all().values_list('id', flat=True))
         response = self.authorized_client.post(
             POST_CREATE,
             data=self.form_data,
             follow=True
         )
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        posts = Post.objects.exclude(id__in=ids)
-        self.assertEqual(posts.count(), 1)
-        post = posts[0]
+        post = Post.objects.latest('id')
         self.assertEqual(self.form_data['text'], post.text,
                          'Текст не совпадает!')
         self.assertEqual(self.form_data['group'], post.group.id)
@@ -57,6 +59,8 @@ class PostFormTests(TestCase):
                              kwargs={'username': post.author}))
 
     def test_edit_post_in_form(self):
+        self.form_data = {'text': 'Другой текст',
+                          'group': self.second_group.id, }
         response = self.authorized_client.post(self.post_edit,
                                                data=self.form_data,
                                                follow=True)
